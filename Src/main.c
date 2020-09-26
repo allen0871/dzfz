@@ -52,13 +52,14 @@ ADC_HandleTypeDef hadc;
 I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
-DMA_HandleTypeDef hdma_spi1_rx;
 
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim14;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef hdma_usart1_tx;
 
 /* USER CODE BEGIN PV */
 
@@ -102,6 +103,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+  
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -127,7 +129,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM14_Init();
   MX_USART1_UART_Init();
-  // MX_USART2_UART_Init();
+  MX_USART2_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   printf("hello\n");
@@ -271,7 +273,8 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSI14 | RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI14
+                              |RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSI14State = RCC_HSI14_ON;
@@ -287,7 +290,8 @@ void SystemClock_Config(void)
   }
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -296,7 +300,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_I2C1;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
@@ -354,6 +358,7 @@ static void MX_ADC_Init(void)
   /* USER CODE BEGIN ADC_Init 2 */
 
   /* USER CODE END ADC_Init 2 */
+
 }
 
 /**
@@ -399,6 +404,7 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**
@@ -438,6 +444,7 @@ static void MX_SPI1_Init(void)
   /* USER CODE BEGIN SPI1_Init 2 */
 
   /* USER CODE END SPI1_Init 2 */
+
 }
 
 /**
@@ -485,6 +492,7 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
+
 }
 
 /**
@@ -530,6 +538,7 @@ static void MX_TIM14_Init(void)
 
   /* USER CODE END TIM14_Init 2 */
   HAL_TIM_MspPostInit(&htim14);
+
 }
 
 /**
@@ -564,6 +573,7 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
+
 }
 
 /**
@@ -598,12 +608,13 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
+
 }
 
 /** 
   * Enable DMA controller clock
   */
-static void MX_DMA_Init(void)
+static void MX_DMA_Init(void) 
 {
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
@@ -612,6 +623,7 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel2_3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+
 }
 
 /**
@@ -633,16 +645,19 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(FAN1_GPIO_Port, FAN1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, FAN2_Pin | ADC_SEL2_Pin | ADC_SEL1_Pin | LCD_RST_Pin | LCD_CS_Pin | LCD_RD_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, FAN2_Pin|ADC_SEL2_Pin|ADC_SEL1_Pin|LCD_RST_Pin 
+                          |LCD_CS_Pin|LCD_RD_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, DAC_CS_Pin | TMP_CS_Pin | LCD_D2_Pin | LCD_D3_Pin | LCD_D4_Pin | LCD_D5_Pin | LCD_D6_Pin | LCD_D7_Pin | LCD_D0_Pin | LCD_D1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, DAC_CS_Pin|TMP_CS_Pin|LCD_D2_Pin|LCD_D3_Pin 
+                          |LCD_D4_Pin|LCD_D5_Pin|LCD_D6_Pin|LCD_D7_Pin 
+                          |LCD_D0_Pin|LCD_D1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOF, LCD_RW_Pin | LCD_CD_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOF, LCD_RW_Pin|LCD_CD_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : CH1_KEY_Pin CH2_KEY_Pin */
-  GPIO_InitStruct.Pin = CH1_KEY_Pin | CH2_KEY_Pin;
+  GPIO_InitStruct.Pin = CH1_KEY_Pin|CH2_KEY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -656,7 +671,8 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : FAN2_Pin ADC_SEL2_Pin ADC_SEL1_Pin LCD_RST_Pin 
                            LCD_CS_Pin LCD_RD_Pin */
-  GPIO_InitStruct.Pin = FAN2_Pin | ADC_SEL2_Pin | ADC_SEL1_Pin | LCD_RST_Pin | LCD_CS_Pin | LCD_RD_Pin;
+  GPIO_InitStruct.Pin = FAN2_Pin|ADC_SEL2_Pin|ADC_SEL1_Pin|LCD_RST_Pin 
+                          |LCD_CS_Pin|LCD_RD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -665,24 +681,27 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : DAC_CS_Pin TMP_CS_Pin LCD_D2_Pin LCD_D3_Pin 
                            LCD_D4_Pin LCD_D5_Pin LCD_D6_Pin LCD_D7_Pin 
                            LCD_D0_Pin LCD_D1_Pin */
-  GPIO_InitStruct.Pin = DAC_CS_Pin | TMP_CS_Pin | LCD_D2_Pin | LCD_D3_Pin | LCD_D4_Pin | LCD_D5_Pin | LCD_D6_Pin | LCD_D7_Pin | LCD_D0_Pin | LCD_D1_Pin;
+  GPIO_InitStruct.Pin = DAC_CS_Pin|TMP_CS_Pin|LCD_D2_Pin|LCD_D3_Pin 
+                          |LCD_D4_Pin|LCD_D5_Pin|LCD_D6_Pin|LCD_D7_Pin 
+                          |LCD_D0_Pin|LCD_D1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LCD_RW_Pin LCD_CD_Pin */
-  GPIO_InitStruct.Pin = LCD_RW_Pin | LCD_CD_Pin;
+  GPIO_InitStruct.Pin = LCD_RW_Pin|LCD_CD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
   /*Configure GPIO pins : E11_A_Pin E11_B_Pin E11_KEY_Pin */
-  GPIO_InitStruct.Pin = E11_A_Pin | E11_B_Pin | E11_KEY_Pin;
+  GPIO_InitStruct.Pin = E11_A_Pin|E11_B_Pin|E11_KEY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 }
 
 /* USER CODE BEGIN 4 */
@@ -712,7 +731,7 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef USE_FULL_ASSERT
+#ifdef  USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
@@ -721,7 +740,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(char *file, uint32_t line)
-{
+{ 
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */

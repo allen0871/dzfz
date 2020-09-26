@@ -78,8 +78,8 @@ void EC11_Capture(void)
 
 void Key_Scan(void)
 {
-    static uint32_t KeyCH1Down_Counter = 0, KeyCh2Down_Counter = 0;
-    static uint32_t KeyCH1Down_Counter_Old = 0, KeyCH2Down_Counter_Old = 0;
+    static unsigned char KeyCH1Down_Counter = 0, KeyCh2Down_Counter = 0;
+    static unsigned char KeyCH1Down_Counter_Old = 0, KeyCH2Down_Counter_Old = 0;
     //记录按键CH1按下时间
     if (!KEY_CH1)
     {
